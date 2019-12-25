@@ -6,6 +6,8 @@
 演示地址：https://mjs.uquhu.cn
 下载地址：https://gitee.com/lovefc/mjs
 
+![avatar](/demo.jpg)
+
 #### 安装教程
 直接下载源码或者使用git克隆
 
