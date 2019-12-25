@@ -11,7 +11,8 @@
 下载地址：https://gitee.com/lovefc/mjs
 
 
-![avatar](/image/demo.jpg) ![avatar](/image/demo2.jpg)
+<!--![avatar](/image/demo.jpg) ![avatar](/image/demo2.jpg)-->
+<p><img src="/lovefc/mjs/raw/master/image/demo.jpg" alt="avatar" width="400"><img src="/lovefc/mjs/raw/master/image/demo2.jpg" alt="avatar" width="400"></p>
 
 ### 安装教程
 直接下载源码或者使用git克隆
