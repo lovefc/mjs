@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>测试</title>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <style>
+        body {
+            background: #000; //rgba(1, 73, 85, 1)
+        }
+
+        #canvas {
+            display: block;
+            margin: 50px auto;
+            /* transform: translateX(-50%); */
+            /* border-radius: 0 0 2rem 2rem;*/
+            /* box-shadow: inset 0px -200px 180px -100px rgba(255, 255, 255, 0.08), 0px 12px 20px -20px rgba(0, 0, 0, 0.08);*/
+        }
+
+        #mycanvas {
+            display: block;
+            position: fixed;
+        }
+
+        audio {
+            display: block;
+            margin: 50px auto;
+        }
+
+        #bg {
+            position: fixed;
+
+            top: 0;
+
+            left: 0;
+
+            bottom: 0;
+
+            right: 0;
+
+            z-index: -1;
+
+            filter: alpha(opacity=50);
+
+            -moz-opacity: 0.8;
+
+            -khtml-opacity: 0.8;
+
+            opacity: 0.8;
+
+        }
+
+        #bg>img {
+
+            height: 100%;
+
+            width: 100%;
+
+            border: 0;
+
+        }
+
+        span {
+            color: #fff;
+            z-index: 999;
+        }
+
+        .songtext {
+            margin: 50px auto;
+            text-align: center;
+            line-height: 30px;
+            height: 30px
+        }
+
+        .songtext .songname {
+            font-size: 28px;
+            font-family: "Arial","黑体","宋体","Microsoft YaHei",sans-serif;
+            background: linear-gradient(to right, rgb(136,173,166,0.8), rgb(46,78,126,1));
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas class="play" id='canvas' width="350" height="350"></canvas>
+    <p class="songtext">
+        <b class="songname" id="lyctext"></b>
+    </p>
+    <div id="bg">
+        <img src="image/bg.jpg" />
+    </div>
+</body>
+<script src="src/mjs.min.js?v=2019/12/25"></script>
+<script>
+    let img = new Image();
+
+    window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext;
+
+    window.onload = function () {
+
+        let musiclist = {};
+
+        // 获取歌单json
+        $.ajax({
+            url: 'http://mjs.uquhu.cn/api.php?lyc=1',
+            type: 'get',
+            async: false,
+            data: {},
+            success: function (data) {
+                musiclist = data;
+            },
+            fail: function () {
+                alert('歌单获取失败！');
+            }
+        });
+        
+        // 实例化
+        let music = new mjs();
+
+        // 歌词显示的回调函数
+        music.lycCallback = (lycText) => {
+            $('#lyctext').html(lycText);
+        };
+
+        music.orderMusic(1); // 定义初始循环方式，写在init函数调用前面, 0为列表循环，1为随机循环，2为单曲循环
+
+        // 初始化回调
+        music.initCallback = (musics) => {
+            // 获取audio对象
+            let audio = music.audio;
+            // 获取图片
+            img.src = musics.pic;
+            let audioSrc = false;
+            let aud = new AudioContext();
+            let analyser = aud.createAnalyser();
+            analyser.connect(aud.destination);
+            audioSrc = aud.createMediaElementSource(audio);
+            audioSrc.connect(analyser);
+            analyser.fftSize = 256;
+            let PI = Math.PI;
+            let canvas = document.getElementById('canvas');
+            let ctx = canvas.getContext('2d');
+            let cwidth = canvas.width;
+            let cheight = canvas.height;
+            let cr = 100; //环形半径
+            let minHeight = 1.5; // 最小的高度
+            let meterWidth = 4.5; // 宽度
+            let meterNum = 90; //设置方块的数量，考虑到闭环的关系
+            let gradient = ctx.createLinearGradient(0, -cr, 0, -cwidth / 2); // 设置渐变
+            gradient.addColorStop(0, 'rgb(255, 200, 174)');
+            gradient.addColorStop(0.1, 'rgb(255, 225, 166)');
+            gradient.addColorStop(0.4, 'rgb(240, 248, 184)');
+            ctx.fillStyle = gradient;
+
+            function render() {
+                let array = new Uint8Array(analyser.frequencyBinCount);
+                analyser.getByteFrequencyData(array);
+                let step = Math.round(array.length / meterNum);
+                ctx.clearRect(0, 0, cwidth, cheight);
+                let scale = 0.6;
+                let width = img.width * scale;
+                let height = img.height * scale;
+                //开始路径画圆,剪切处理
+                ctx.clearRect(0, 0, cwidth, cheight);
+                ctx.save();
+                ctx.beginPath();
+                let x = 88;
+                ctx.arc(x * 2, x * 2, x, 0, x);
+                ctx.clip(); //剪切路径
+                dx = cwidth / 2 - width / 2; //目标图像的坐标
+                dy = cheight / 2 - height / 2; //目标图像的坐标
+                ctx.drawImage(img, dx, dy, width, height);
+                ctx.rotate(2 * PI / meterNum);
+                ctx.restore();
+                ctx.save();
+                ctx.translate(cwidth / 2, cheight / 2);
+                for (let i = 0; i < meterNum; i++) {
+                    //ctx.save();
+                    let value = array[i * step];
+                    // 这一段代码改变音频柱的显示方式
+                    let meterHeight = value * (cheight / 2 - cr) / 512 || minHeight;
+                    if (meterHeight > 20) {
+                        meterHeight = meterHeight - 10;
+                    }
+                    ctx.rotate(2 * PI / meterNum);
+                    ctx.fillRect(-meterWidth / 2, -cr - meterHeight, meterWidth, meterHeight);
+                }
+                ctx.restore();
+                requestAnimationFrame(render);
+            }
+            render();
+        };
+
+        // 传入歌曲json 
+        music.init(musiclist);
+
+        // 切歌的回调
+        music.switchCallback = (music) => {
+            img.src = music.pic;
+        };
+
+        // 获取当前歌曲的播放时间和进度的回调
+        music.timeCallback = (music) => {
+            $('#times').html(music.nowtime + "/" + music.alltime);
+        };
+
+        $(".play").click(function () {
+            music.autoPlay();
+        });
+    };
+</script>
+
+</html>
