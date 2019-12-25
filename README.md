@@ -1,10 +1,15 @@
 # mjs - 小巧方便的音乐播放js类
 
 #### 介绍
+
 轻巧方便的music封装类库，利用它可以快速打造一个功能全，个性化的music播放器
+
 提供了很多播放事件以及回调，确保你能更加灵活的使用它
+
 演示地址：https://mjs.uquhu.cn
+
 下载地址：https://gitee.com/lovefc/mjs
+
 
 ![avatar](/demo.jpg)
 

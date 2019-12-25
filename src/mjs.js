@@ -2,6 +2,7 @@
  * 基础的music播放js类库-mjs
  * 封装了基本的音乐操作
  * author: lovefc
+ * git: https://gitee.com/lovefc/mjs
  * time: 2019/12/24 14:25
  * uptime: 2019/12/25 11:00
  */
