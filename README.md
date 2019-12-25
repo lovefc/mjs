@@ -9,15 +9,7 @@
 #### 安装教程
 直接下载源码或者使用git克隆
 
-#### 使用说明
-    // 实例化mjs类库
-    let music = new mjs();
-    // 传入歌曲json，初始化
-    // json为多维json
-    // [{'title':'歌曲名称','author':'作者','pic':'歌曲封面','url':'播放直链地址'}]
-    music.init(musiclist); 
-    
-#### 详细使用方法(具体看案例)
+#### 使用方法(具体看案例)
 
     // 实例化mjs类库
     let music = new mjs();
