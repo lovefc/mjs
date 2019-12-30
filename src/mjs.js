@@ -9,7 +9,7 @@
 'use strice';
 let mjs = function () {
     if (!new.target) {
-        return new Fcmusic()
+        return new mjs()
     };
     this.audio = '';
     this.playStatus = 0;
