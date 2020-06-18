@@ -5,7 +5,7 @@
  * git: https://gitee.com/lovefc/mjs
  * time: 2019/12/24 14:25
  * uptime: 2019/12/25 11:00
- * uptime: 2020/06/17 19:14 
+ * uptime: 2020/06/18 23:30
  */
 'use strice';
 (function(exports) {
@@ -19,12 +19,15 @@
 		this.currentTime = 0;
 		this.arrMusic = new Array();
 		this.nowPlayNum = 0;
+		// 当前的操作
+		this.operation;
 		this.arrMusicNum = 0;
 		this.lycArray = new Array();
 		this.newLyc = '';
 		this.volume = 1;
 		this.currentnum = 0;
-		this.order = 0;
+		this.order = 0; // 0|顺序,1|随机,2单曲
+		this.task;
 		this.lycCallback = function() {};
 		this.switchCallback = function() {};
 		this.timeCallback = function() {};
@@ -40,6 +43,7 @@
 				times['nowtime'] = that.setTimes(Math.round(that.audio.currentTime));
 				times['alltime'] = that.setTimes(Math.round(that.audio.duration));
 				let playProgress = Math.round(that.audio.currentTime / that.audio.duration * 100);
+				playProgress = isNaN(playProgress) ? 0 : playProgress;
 				times['progress'] = playProgress;
 				that.timeCallback(times);
 			}
@@ -59,27 +63,46 @@
 				}
 			}
 		};
-		
+
 		// 初始化事件
-		this.init = function(data,order,volume,cross) {
+		this.init = function(data, order, volume, cross) {
 			if (!data) return false;
 			this.audio = document.createElement('audio');
-			if(cross === true){
-			   this.audio.crossOrigin = 'anonymous';
-			   this.audio.controls = false;
+			if (cross === true) {
+				this.audio.crossOrigin = 'anonymous';
+				this.audio.controls = false;
 			}
 			this.audio.src = '';
-			if(volume){
-			    this.playVolume(parseFloat(volume));
+			if (volume) {
+				this.playVolume(parseFloat(volume));
 			}
-			if(order){
-			    this.orderMusic(parseInt(order));
+			if (order) {
+				this.orderMusic(parseInt(order));
 			}
 			document.body.appendChild(this.audio);
 			this.jsonToArray(data);
-			
-			// 监听结束事件
+			// 监听删除定时器
+			this.audio.addEventListener('durationchange', function() {
+				window.clearInterval(that.task);
+			}, false);
+			// 监听错误事件
+			this.audio.addEventListener('error', function() {
+				that.task = window.setInterval(function() {
+					if (!that.audio.duration) {
+						if (that.playStatus == 1) {
+							if (that.operation === 'add') {
+								that.nextMusic();
+							}
+							if (that.operation === 'minus') {
+								that.prevMusic();
+							}
+						}
+					}
+				}, 1000);
+			}, false);
+			// 监听结束事件			
 			this.audio.addEventListener('ended', function() {
+				that.operation == 'add';
 				if (that.playStatus == 1) {
 					if (that.order != 2) {
 						that.nextMusic();
@@ -88,7 +111,6 @@
 					}
 				}
 			}, false);
-
 			// 监听开始
 			this.audio.addEventListener('canplay', function() {
 				that.audio.ontimeupdate = that.timeupdate;
@@ -98,13 +120,6 @@
 			this.audio.addEventListener('seeked', function() {
 				that._timeCallback();
 			}, false);
-
-			// 监听错误
-			this.audio.addEventListener('error', function() {
-				// 直接播放下一首
-				that.nextMusic();
-			}, false);
-
 			// 定时任务,用来定位歌词位置和渲染操作
 			let music_currentnum = setInterval(function() {
 				if (that.playStatus == 1) {
@@ -118,7 +133,6 @@
 					}
 				}
 			}, 500);
-
 			if (typeof this.initCallback === "function") {
 				this.initCallback(this.arrMusic[this.nowPlayNum])
 			}
@@ -207,6 +221,7 @@
 		};
 		// 上一首
 		this.prevMusic = function(callback) {
+			this.operation = 'minus';
 			let order = this.playOrder();
 			if (order === 0) {
 				this.nowPlayNum--
@@ -226,11 +241,12 @@
 		};
 		// 下一首
 		this.nextMusic = function(callback) {
+			this.operation = 'add';
 			let order = this.playOrder();
 			if (order === 0) {
-				this.nowPlayNum++
+				this.nowPlayNum++;
 			} else {
-				this.nowPlayNum = order
+				this.nowPlayNum = order;
 			}
 			if (this.nowPlayNum > this.arrMusicNum) {
 				this.nowPlayNum = 0
