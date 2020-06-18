@@ -95,7 +95,7 @@
         <img src="image/bg.jpg" />
     </div>
 </body>
-<script src="src/mjs.min.js?v=2019/12/25"></script>
+<script src="src/mjs.min.js?v=20200618"></script>
 <script>
     let img = new Image();
 
@@ -126,8 +126,6 @@
         music.lycCallback = (lycText) => {
             $('#lyctext').html(lycText);
         };
-
-        music.orderMusic(1); // 定义初始循环方式，写在init函数调用前面, 0为列表循环，1为随机循环，2为单曲循环
 
         // 初始化回调
         music.initCallback = (musics) => {
@@ -197,7 +195,7 @@
         };
 
         // 传入歌曲json 
-        music.init(musiclist);
+        music.init(musiclist,1,1,true);
 
         // 切歌的回调
         music.switchCallback = (music) => {

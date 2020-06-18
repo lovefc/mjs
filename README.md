@@ -6,7 +6,7 @@
 
 提供了很多播放事件以及回调，确保你能更加灵活的使用它
 
-演示地址：https://mjs.uquhu.cn
+演示地址：https://lovefc.gitee.io/mjs/
 
 下载地址：https://gitee.com/lovefc/mjs
 
@@ -34,14 +34,11 @@
         $('#pic').html('<img src="' + attr.pic + '" width="100">');
     };
 
-    music.playVolume(0.5); // 初始音量，写在init函数调用前面
-
-    music.orderMusic(1); // 定义初始循环方式，写在init函数调用前面, 0为列表循环，1为随机循环，2为单曲循环
-    
     // 传入歌曲json，初始化
     // json为多维json
-    //[{'title':'歌曲名称','author':'作者','pic':'歌曲封面','url':'播放直链地址'}]
-    music.init(musiclist);
+    // [{'title':'歌曲名称','author':'作者','pic':'歌曲封面','url':'播放直链地址'}]
+    // music.init(歌曲json,循环方式[0,1,2],初始音量[0.1-1],跨域[true|false]);
+    music.init(musiclist,1,0.5,false);
 
     // 获取当前歌曲的播放时间和进度的回调，写在init函数后面
     music.timeCallback = (music) => {
