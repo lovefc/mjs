@@ -3,13 +3,27 @@
  * 封装了基本的音乐操作
  * author: lovefc
  * git: https://gitee.com/lovefc/mjs
- * time: 2019/12/24 14:25
- * uptime: 2019/12/25 11:00
+ * time: 2019/12/24 14:25 * uptime: 2019/12/25 11:00
  * uptime: 2020/06/18 23:30
+ * uptime: 2021/10/27 14:21 
  */
 'use strice';
-(function(exports) {
-	let mjs = function() {
+; (function (factory) {
+	if (typeof exports === "object") {
+		module.exports = factory();
+	} else if (typeof define === "function" && define.amd) {
+		define(factory);
+	} else {
+		let glob;
+		try {
+			glob = window;
+		} catch (e) {
+			glob = self;
+		}
+		glob.mjs = factory();
+	}
+})(function () {
+	let mjs = function () {
 		let that = this;
 		if (!new.target) {
 			return new mjs()
@@ -28,16 +42,16 @@
 		this.currentnum = 0;
 		this.order = 0; // 0|顺序,1|随机,2单曲
 		this.task;
-		this.lycCallback = function() {};
-		this.switchCallback = function() {};
-		this.timeCallback = function() {};
-		this.initCallback = function() {};
-		this._lycCallback = async function() {
+		this.lycCallback = function () { };
+		this.switchCallback = function () { };
+		this.timeCallback = function () { };
+		this.initCallback = function () { };
+		this._lycCallback = async function () {
 			if (typeof that.lycCallback === "function") {
 				that.lycCallback(that.newLyc);
 			}
 		};
-		this._timeCallback = async function() {
+		this._timeCallback = async function () {
 			if (typeof that.timeCallback === "function") {
 				let times = new Array();
 				times['nowtime'] = that.setTimes(Math.round(that.audio.currentTime));
@@ -48,14 +62,14 @@
 				that.timeCallback(times);
 			}
 		};
-		this.timeupdate = function() {
+		this.timeupdate = function () {
 			if (that.lycArray.length > 0) {
 				if (that.currentnum == that.lycArray.length - 1 && that.audio.currentTime.toFixed(3) >= parseFloat(that.lycArray[
-						that.currentnum].t)) {
+					that.currentnum].t)) {
 					that.newLyc = that.lycArray[that.currentnum].c;
 				}
 				if (parseInt(that.lycArray[that.currentnum].t) <= parseInt(that.audio.currentTime + 0.05) && parseInt(that.audio
-						.currentTime + 0.05) <= parseInt(that.lycArray[that.currentnum + 1].t)) {
+					.currentTime + 0.05) <= parseInt(that.lycArray[that.currentnum + 1].t)) {
 					if (that.audio.currentTime > 0) {
 						that.newLyc = that.lycArray[that.currentnum].c;
 					}
@@ -65,7 +79,7 @@
 		};
 
 		// 初始化事件
-		this.init = function(data, order, volume, cross) {
+		this.init = function (data, order, volume, cross) {
 			if (!data) return false;
 			this.audio = document.createElement('audio');
 			if (cross === true) {
@@ -81,13 +95,16 @@
 			}
 			document.body.appendChild(this.audio);
 			this.jsonToArray(data);
+			if (typeof this.initCallback === "function") {
+				this.initCallback(this.arrMusic[this.nowPlayNum])
+			}
 			// 监听删除定时器
-			this.audio.addEventListener('durationchange', function() {
+			this.audio.addEventListener('durationchange', function () {
 				window.clearInterval(that.task);
 			}, false);
 			// 监听错误事件
-			this.audio.addEventListener('error', function() {
-				that.task = window.setInterval(function() {
+			this.audio.addEventListener('error', function () {
+				that.task = window.setInterval(function () {
 					if (!that.audio.duration) {
 						if (that.playStatus == 1) {
 							if (that.operation === 'add') {
@@ -101,7 +118,7 @@
 				}, 1000);
 			}, false);
 			// 监听结束事件			
-			this.audio.addEventListener('ended', function() {
+			this.audio.addEventListener('ended', function () {
 				that.operation == 'add';
 				if (that.playStatus == 1) {
 					if (that.order != 2) {
@@ -112,41 +129,41 @@
 				}
 			}, false);
 			// 监听开始
-			this.audio.addEventListener('canplay', function() {
+			this.audio.addEventListener('canplay', function () {
 				that.audio.ontimeupdate = that.timeupdate;
 			}, false);
 
 			// 监听跳转
-			this.audio.addEventListener('seeked', function() {
+			this.audio.addEventListener('seeked', function () {
 				that._timeCallback();
 			}, false);
 			// 定时任务,用来定位歌词位置和渲染操作
-			let music_currentnum = setInterval(function() {
+			let music_currentnum = setInterval(function () {
 				if (that.playStatus == 1) {
 					that._timeCallback();
 					that._lycCallback();
 				}
 				for (i = 0; i < that.lycArray.length; i++) {
-					if (parseInt(that.lycArray[i].t) <= parseInt(that.audio.currentTime + 0.2) && parseInt(that.lycArray[i + 1].t) >=
-						parseInt(that.audio.currentTime + 0.2)) {
+					if (parseInt(that.lycArray[i].t) <= parseInt(that.audio.currentTime + 0.1) && parseInt(that.lycArray[i + 1].t) >=
+						parseInt(that.audio.currentTime + 0.1)) {
 						that.currentnum = i
 					}
 				}
 			}, 500);
-			if (typeof this.initCallback === "function") {
-				this.initCallback(this.arrMusic[this.nowPlayNum])
-			}
 		};
-		this.orderMusic = function(num) {
+		this.orderMusic = function (num) {
 			this.order = +num
 		};
-		this.playOrder = function() {
+		this.playOrder = function () {
 			let num = this.order;
 			// 从零开始的播放单
 			let nowPlayNum = 0;
 			switch (num) {
+				case 0:
+					this.nowPlayNum = nowPlayNum;
+					break
 				case 1:
-					nowPlayNum = parseInt(Math.random() * (this.arrMusicNum - 1 + 1) + 1, 10);
+					nowPlayNum = parseInt(Math.random() * (this.arrMusicNum - 1 + 1), 10);
 					this.nowPlayNum = nowPlayNum;
 					break
 				case 2:
@@ -156,10 +173,10 @@
 			return nowPlayNum;
 		};
 		// 获取aduio对象
-		this.getAudio = function() {
+		this.getAudio = function () {
 			return this.audio;
 		};
-		this.jsonToArray = function(json) {
+		this.jsonToArray = function (json) {
 			this.arrMusic = new Array();
 			if (json == null && json.toString() == '') {
 				console.log('json error');
@@ -176,7 +193,7 @@
 			this.attrMusic(this.arrMusic[this.nowPlayNum])
 		};
 		// 切换歌曲
-		this.attrMusic = function(arr, callback) {
+		this.attrMusic = function (arr, callback) {
 			if (arr && arr.hasOwnProperty('url')) {
 				this.audio.src = arr['url'];
 				this.audio.load(); // 开始加载
@@ -189,7 +206,7 @@
 			}
 		};
 		// 创建歌词
-		this.createLrc = function(lycText) {
+		this.createLrc = function (lycText) {
 			this.lycArray = new Array();
 			if (!lycText) return;
 			let lycs = new Array();
@@ -204,7 +221,7 @@
 			}
 		};
 		// 开始播放
-		this.autoPlay = function(callback) {
+		this.autoPlay = function (callback) {
 			this.playStatus = 1;
 			this.audio.play();
 			if (typeof callback === "function") {
@@ -212,7 +229,7 @@
 			}
 		};
 		// 暂停播放
-		this.stopPlay = function(callback) {
+		this.stopPlay = function (callback) {
 			this.playStatus = 0;
 			this.audio.pause();
 			if (typeof callback === "function") {
@@ -220,7 +237,7 @@
 			}
 		};
 		// 上一首
-		this.prevMusic = function(callback) {
+		this.prevMusic = function (callback) {
 			this.operation = 'minus';
 			let order = this.playOrder();
 			if (order === 0) {
@@ -240,7 +257,7 @@
 			}
 		};
 		// 下一首
-		this.nextMusic = function(callback) {
+		this.nextMusic = function (callback) {
 			this.operation = 'add';
 			let order = this.playOrder();
 			if (order === 0) {
@@ -260,14 +277,14 @@
 			}
 		};
 		// 进度设置
-		this.playProgress = function(val) {
+		this.playProgress = function (val) {
 			if (that.audio.duration && val) {
 				that.audio.currentTime = Math.round(that.audio.duration * (val / 100));
 				that._timeCallback();
 			}
 		};
 		// 音量设置
-		this.playVolume = function(volume, callback) {
+		this.playVolume = function (volume, callback) {
 			volume = volume > 1 ? 1 : volume;
 			this.audio.volume = volume;
 			if (typeof callback === "function") {
@@ -275,14 +292,14 @@
 			}
 		};
 		// 速度设置
-		this.playRate = function(val, callback) {
+		this.playRate = function (val, callback) {
 			val = val / 100;
 			this.audio.playbackRate = val;
 			if (typeof callback === "function") {
 				callback(val)
 			}
 		};
-		this.setTimes = function(value) {
+		this.setTimes = function (value) {
 			let theTime = parseInt(value);
 			let theTime1 = 0;
 			let theTime2 = 0;
@@ -316,5 +333,5 @@
 			return results
 		}
 	}
-	exports.mjs = mjs;
-})(this);
+	return mjs;
+});
