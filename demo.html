@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>测试</title>
+    <title>呵,是小丑</title>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <style>
         body {
@@ -15,7 +15,7 @@
 
         #canvas {
             display: block;
-            margin: 50px auto;
+            margin: 12vh auto;
             /* transform: translateX(-50%); */
             /* border-radius: 0 0 2rem 2rem;*/
             /* box-shadow: inset 0px -200px 180px -100px rgba(255, 255, 255, 0.08), 0px 12px 20px -20px rgba(0, 0, 0, 0.08);*/
@@ -70,7 +70,7 @@
         }
 
         .songtext {
-            margin: 50px auto;
+            margin: 100px auto;
             text-align: center;
             line-height: 30px;
             height: 30px
@@ -78,8 +78,8 @@
 
         .songtext .songname {
             font-size: 28px;
-            font-family: "Arial","黑体","宋体","Microsoft YaHei",sans-serif;
-            background: linear-gradient(to right, rgb(136,173,166,0.8), rgb(46,78,126,1));
+            font-family: "Arial", "黑体", "宋体", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(to right, rgb(136, 173, 166, 0.8), rgb(46, 78, 126, 1));
             -webkit-background-clip: text;
             color: transparent;
         }
@@ -92,10 +92,10 @@
         <b class="songname" id="lyctext"></b>
     </p>
     <div id="bg">
-        <img src="image/bg.jpg" />
+        <!--<img src="image/bg.jpg" />-->
     </div>
 </body>
-<script src="src/mjs.min.js?v=20200618"></script>
+<script src="src/mjs.min.js?v=20211027"></script>
 <script>
     let img = new Image();
 
@@ -103,22 +103,8 @@
 
     window.onload = function () {
 
-        let musiclist = {};
+        let musiclist = [{ "id": 26524035, "title": "\u5c0f\u4e11\u5148\u751f", "author": "\u90d1\u56fd\u950b", "pic": "mp3/xiaochou.jpg", "url": "mp3/xiaochou.mp3", "lyc": "[00:00.370]\u4f5c\u66f2\uff1a\u90d1\u56fd\u950b\n[00:01.370]\u4f5c\u8bcd\uff1a\u90d1\u56fd\u950b\n[00:02.370]\u7f16\u66f2\uff1a\u989c\u5c0f\u5065\n[00:30.370]\u4f60\u548c\u4ed6\u5728\u65c1\u6b23\u8d4f\n[00:33.560]\u6211\u7a7f\u7740\u6ed1\u7a3d\u8863\u88f3\n[00:36.410]\u53d8\u7740\u82b1\u6837\n[00:38.360]\u628a\u81ea\u5df1\u90fd\u9690\u85cf\n[00:41.200]\u591c\u665a\u85cf\u533f\u7684\u706f\u5149\n[00:44.890]\u8131\u4e0b\u6700\u540e\u4f2a\u88c5\n[00:47.820]\u4e5f\u6162\u6162\u5378\u4e0b\n[00:49.570]\u90a3\u6240\u8c13\u7684\u575a\u5f3a\n[00:52.330]\u6211\u5728\u4f60\u773c\u91cc\u50cf\u4e2a\u5c0f\u4e11\u4e00\u6837\n[00:56.360]\u5728\u9ed1\u591c\u91cc\u8f7b\u543b\u7740\u4f24\n[00:59.160]\u53ef\u90a3\u53c8\u600e\u6837\n[01:00.900]\u7231\u6ca1\u6709\u88ab\u539f\u8c05\n[01:03.430]\u6211\u5728\u4f60\u773c\u91cc\u50cf\u4e2a\u5c0f\u4e11\u4e00\u6837\n[01:07.630]\u5728\u9ed1\u591c\u91cc\u4eab\u53d7\u51c4\u51c9\n[01:10.480]\u4f60\u4e0d\u8bb0\u5f97\u6211\u6a21\u6837\n[01:13.270]\u6211\u6162\u6162\u88ab\u9057\u5fd8\n[01:16.250]\n[01:26.780]\u4f60\u548c\u4ed6\u5728\u65c1\u6b23\u8d4f\n[01:30.060]\u6211\u7a7f\u7740\u6ed1\u7a3d\u8863\u88f3\n[01:32.880]\u53d8\u7740\u82b1\u6837\n[01:34.790]\u628a\u81ea\u5df1\u90fd\u9690\u85cf\n[01:37.460]\u591c\u665a\u85cf\u533f\u7684\u706f\u5149\n[01:41.440]\u8131\u4e0b\u6700\u540e\u4f2a\u88c5\n[01:44.330]\u4e5f\u6162\u6162\u5378\u4e0b\n[01:46.020]\u90a3\u6240\u8c13\u7684\u575a\u5f3a\n[01:48.840]\u6211\u5728\u4f60\u773c\u91cc\u50cf\u4e2a\u5c0f\u4e11\u4e00\u6837\n[01:52.650]\u5728\u9ed1\u591c\u91cc\u8f7b\u543b\u7740\u4f24\n[01:55.590]\u53ef\u90a3\u53c8\u600e\u6837\n[01:57.640]\u7231\u6ca1\u6709\u88ab\u539f\u8c05\n[02:00.180]\u6211\u5728\u4f60\u773c\u91cc\u50cf\u4e2a\u5c0f\u4e11\u4e00\u6837\n[02:05.140]\u5728\u9ed1\u591c\u91cc\u4eab\u53d7\u51c4\u51c9\n[02:08.110]\u4f60\u4e0d\u8bb0\u5f97\u6211\u6a21\u6837\n[02:11.020]\u6211\u6162\u6162\u88ab\u9057\u5fd8\n[02:12.560]\u6211\u5728\u4f60\u773c\u91cc\u50cf\u4e2a\u5c0f\u4e11\u4e00\u6837\n[02:16.540]\u5728\u9ed1\u591c\u91cc\u8f7b\u543b\u7740\u4f24\n[02:19.310]\u53ef\u90a3\u53c8\u600e\u6837\n[02:21.070]\u7231\u6ca1\u6709\u88ab\u539f\u8c05\n[02:23.760]\u6211\u5728\u4f60\u773c\u91cc\u50cf\u4e2a\u5c0f\u4e11\u4e00\u6837\n[02:27.700]\u5728\u9ed1\u591c\u91cc\u4eab\u53d7\u51c4\u51c9\n[02:30.630]\u4f60\u4e0d\u8bb0\u5f97\u6211\u6a21\u6837\n[02:33.620]\u6211\u4e0d\u60f3\u88ab\u9057\u5fd8\n[02:36.510]\n" }];
 
-        // 获取歌单json
-        $.ajax({
-            url: 'http://mjs.uquhu.cn/api.php?lyc=1',
-            type: 'get',
-            async: false,
-            data: {},
-            success: function (data) {
-                musiclist = data;
-            },
-            fail: function () {
-                alert('歌单获取失败！');
-            }
-        });
-        
         // 实例化
         let music = new mjs();
 
@@ -133,6 +119,7 @@
             let audio = music.audio;
             // 获取图片
             img.src = musics.pic;
+            $('#lyctext').html(musics.title);
             let audioSrc = false;
             let aud = new AudioContext();
             let analyser = aud.createAnalyser();
@@ -195,11 +182,13 @@
         };
 
         // 传入歌曲json 
-        music.init(musiclist,1,1,true);
+        music.init(musiclist, 0, 1, true);
 
         // 切歌的回调
         music.switchCallback = (music) => {
+            music.autoPlay();
             img.src = music.pic;
+            $('#lyctext').html(music.title);
         };
 
         // 获取当前歌曲的播放时间和进度的回调
@@ -210,6 +199,7 @@
         $(".play").click(function () {
             music.autoPlay();
         });
+        music.autoPlay();
     };
 </script>
 

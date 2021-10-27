@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 
 <head>
     <meta charset="UTF-8">
@@ -49,7 +49,7 @@
     <br /><span id="times"></span>
     <p id="lyctext"></p>
 </body>
-<script src="src/mjs.min.js?v=20200618"></script>
+<script src="src/mjs.min.js?v=20211027"></script>
 <script>
     let musiclist = {};
     // 获取歌单json
@@ -70,6 +70,7 @@
     // 实例化mjs类库
     let music = new mjs();
 
+
     // 歌词显示的回调函数，写在init函数调用前面
     music.lycCallback = (lycText) => {
         $('#lyctext').html(lycText);
@@ -81,12 +82,12 @@
         $('#songname').html(attr.title + "-" + attr.author);
         $('#pic').html('<img src="' + attr.pic + '" width="100">');
     };
-    
+
     // 传入歌曲json，初始化
     // json为多维json
     // [{'title':'歌曲名称','author':'作者','pic':'歌曲封面','url':'播放直链地址'}]
     // music.init(歌曲json,循环方式[0,1,2],初始音量[0.1-1],跨域[true|false]);
-    music.init(musiclist,1,0.5);
+    music.init(musiclist, 0, 0.5);
 
     // 获取当前歌曲的播放时间和进度的回调，写在init函数后面
     music.timeCallback = (music) => {
