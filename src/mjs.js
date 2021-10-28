@@ -7,6 +7,7 @@
  * uptime: 2020/06/18 23:30
  * uptime: 2021/10/27 14:21 
  */
+
 'use strice';
 ; (function (factory) {
 	if (typeof exports === "object") {
@@ -159,9 +160,6 @@
 			// 从零开始的播放单
 			let nowPlayNum = 0;
 			switch (num) {
-				case 0:
-					this.nowPlayNum = nowPlayNum;
-					break
 				case 1:
 					nowPlayNum = parseInt(Math.random() * (this.arrMusicNum - 1 + 1), 10);
 					this.nowPlayNum = nowPlayNum;
